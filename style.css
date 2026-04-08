@@ -98,6 +98,18 @@ body {
   line-height: 1.5;
 }
 
+.destaque-principal {
+  background: linear-gradient(135deg, #16a34a 0%, #38bdf8 50%, #f59e0b 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-size: 1.3rem !important;
+  font-weight: 700 !important;
+  line-height: 1.6 !important;
+  text-shadow: 0 2px 8px rgba(22, 163, 74, 0.15);
+  letter-spacing: 0.3px;
+}
+
 .card h2 {
   margin-bottom: 16px;
   font-size: 1.2rem;
