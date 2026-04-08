@@ -151,11 +151,44 @@ body {
   font-size: 1rem;
   font-weight: bold;
   cursor: pointer;
-  transition: transform 0.15s ease;
+  transition: transform 0.15s ease, opacity 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 }
 
 .btn:hover {
   transform: translateY(-1px);
+}
+
+.btn:disabled {
+  opacity: 0.8;
+  cursor: not-allowed;
+}
+
+.btn.calculando {
+  pointer-events: none;
+}
+
+.spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: girar 0.8s linear infinite;
+}
+
+.btn.secundario .spinner {
+  border-color: rgba(15, 23, 42, 0.3);
+  border-top-color: var(--text-dark);
+}
+
+@keyframes girar {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 .principal {
