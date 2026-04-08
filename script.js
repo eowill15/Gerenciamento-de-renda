@@ -1,4 +1,5 @@
 let grafico = null;
+let ultimoCalculo = null;
 
 function pegarValor(id) {
   return Number(document.getElementById(id).value) || 0;
@@ -47,6 +48,54 @@ function carregarDados() {
     const campo = document.getElementById(id);
     if (campo) campo.value = dados[id];
   });
+}
+
+function carregarHistorico() {
+  const dadosSalvos = localStorage.getItem("simuladorRendaHistorico");
+  if (!dadosSalvos) return renderizarHistorico([]);
+
+  const historico = JSON.parse(dadosSalvos);
+  renderizarHistorico(historico);
+}
+
+function salvarHistoricoLocal(historico) {
+  localStorage.setItem("simuladorRendaHistorico", JSON.stringify(historico));
+}
+
+function renderizarHistorico(historico) {
+  const lista = document.getElementById("listaHistorico");
+  if (!lista) return;
+
+  if (historico.length === 0) {
+    lista.innerHTML = `<p class="placeholder">Nenhum histórico salvo ainda.</p>`;
+    return;
+  }
+
+  lista.innerHTML = historico.map((item) => `
+    <div class="historico-item">
+      <div>
+        <strong>${item.data}</strong>
+        <p>${item.rendaTotal} de renda — sobra ${item.sobraMensal} — ${item.porcentagemGastos}% gastos</p>
+      </div>
+      <div>
+        <span>${item.status}</span>
+      </div>
+    </div>
+  `).join("");
+}
+
+function adicionarHistorico(entry) {
+  const dadosSalvos = localStorage.getItem("simuladorRendaHistorico");
+  const historico = dadosSalvos ? JSON.parse(dadosSalvos) : [];
+  historico.unshift(entry);
+  if (historico.length > 10) historico.pop();
+  salvarHistoricoLocal(historico);
+  renderizarHistorico(historico);
+}
+
+function limparHistorico() {
+  localStorage.removeItem("simuladorRendaHistorico");
+  renderizarHistorico([]);
 }
 
 function gerarDicas(rendaTotal, gastosTotais, sobraMensal, porcentagemGastos, categorias) {
@@ -268,6 +317,17 @@ function calcular() {
     gerarDicas(rendaTotal, gastosTotais, sobraMensal, porcentagemGastos, categorias);
     salvarDados();
 
+    ultimoCalculo = {
+      data: new Date().toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric" }),
+      rendaTotal: formatar(rendaTotal),
+      sobraMensal: formatar(sobraMensal),
+      porcentagemGastos: porcentagemGastos.toFixed(1),
+      status: statusTexto
+    };
+
+    const botaoHistorico = document.getElementById("salvarHistorico");
+    if (botaoHistorico) botaoHistorico.disabled = false;
+
     // Resetar botão
     btnCalcular.disabled = false;
     btnCalcular.classList.remove("calculando");
@@ -297,6 +357,26 @@ function limparCampos() {
     grafico.destroy();
     grafico = null;
   }
+
+  const botaoHistorico = document.getElementById("salvarHistorico");
+  if (botaoHistorico) botaoHistorico.disabled = true;
 }
 
-window.addEventListener("load", carregarDados);
+window.addEventListener("load", () => {
+  carregarDados();
+  carregarHistorico();
+
+  const botaoHistorico = document.getElementById("salvarHistorico");
+  if (botaoHistorico) {
+    botaoHistorico.addEventListener("click", () => {
+      if (!ultimoCalculo) return;
+      adicionarHistorico(ultimoCalculo);
+      botaoHistorico.disabled = true;
+    });
+  }
+
+  const botaoLimparHistorico = document.getElementById("limparHistorico");
+  if (botaoLimparHistorico) {
+    botaoLimparHistorico.addEventListener("click", limparHistorico);
+  }
+});

@@ -427,6 +427,48 @@ body {
   color: var(--muted-dark);
 }
 
+.historico-header {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 18px;
+}
+
+.historico-acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.lista-historico {
+  display: grid;
+  gap: 12px;
+}
+
+.historico-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+}
+
+.historico-item strong {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.historico-item p {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.95rem;
+}
+
 @media (min-width: 700px) {
   body {
     padding: 28px;
