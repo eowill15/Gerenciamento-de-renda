@@ -366,12 +366,6 @@ function limparCampos() {
 
 document.addEventListener("DOMContentLoaded", () => {
 
-  const btnLancamentoRapido = document.getElementById("btnLancamentoRapido");
-
-if (btnLancamentoRapido) {
-  btnLancamentoRapido.addEventListener("click", adicionarLancamentoRapido);
-}
-
  let categoriaSelecionada = "";
 
 const palavrasCategorias = {
