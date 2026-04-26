@@ -4,17 +4,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>My Cash</title>
+  <title>CashPulse</title>
   <link rel="icon"
     href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text> </svg>">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0f172a">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="Meu Dinheiro">
+  <meta name="apple-mobile-web-app-title" content="CashPulse">
   <link rel="apple-touch-icon"
     href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>">
-  <link rel="stylesheet" href="style.css">
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css?v=10">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Bebas+Neue&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -28,7 +33,7 @@
   <main class="app">
     <section class="topo paper">
       <div class="topo-icone">💸</div>
-      <h1>Meu Dinheiro</h1>
+      <h1>CashPulse</h1>
       <p class="destaque-principal">Controle seus gastos, veja quanto sobra e entenda sua saúde financeira.</p>
     </section>
 
@@ -60,6 +65,57 @@
           </button>
 
           <div id="feedbackLancamento" class="feedback-lancamento"></div>
+          
+          
+  <div id="painelRapido" class="painel-rapido">
+
+  <div class="painel-item gasto">
+    <div class="painel-emoji">💸</div>
+    <div>
+      <span>Total gasto</span>
+      <strong id="gastoAtualRapido">R$ 0,00</strong>
+    </div>
+  </div>
+
+  <div class="painel-item saldo">
+    <div class="painel-emoji">🟢</div>
+    <div>
+      <span>Saldo restante</span>
+      <strong id="saldoAtualRapido">R$ 0,00</strong>
+    </div>
+  </div>
+
+  <div class="painel-item dia">
+    <div class="painel-emoji">📅</div>
+    <div>
+      <span>Pode gastar hoje</span>
+      <strong id="limiteHoje">R$ 0,00</strong>
+    </div>
+  </div>
+
+</div>
+
+<div id="alertaFinanceiro" class="alerta-financeiro">
+  🟢 Tudo certo no momento.
+</div>
+
+<div class="historico-lancamentos">
+  <h3>🧾 Últimos lançamentos</h3>
+  
+  <div id="listaLancamentosRapidos">
+    Nenhum lançamento ainda.
+  </div>
+
+</div>
+
+<div class="ranking-box">
+  <h3>📊 Onde você mais gasta</h3>
+  <div id="rankingGastos">
+    Nenhum gasto registrado ainda.
+  </div>
+</div>
+
+</div>
         </div>
       </section>
 
@@ -169,5 +225,11 @@
     }
   </script>
 </body>
+
+<div id="painelRapido" class="painel-rapido">
+  <p>Total gasto no momento: <strong id="gastoAtualRapido">R$ 0,00</strong></p>
+  <p>Saldo restante: <strong id="saldoAtualRapido">R$ 0,00</strong></p>
+  <p>Pode gastar hoje: <strong id="limiteHoje">R$ 0,00</strong></p>
+  </div>
 
 </html>

@@ -1,6 +1,7 @@
 let grafico = null;
 let ultimoCalculo = null;
-
+let ultimoLancamentoRapido = null;
+let lancamentosRapidos = [];
 function pegarValor(id) {
   return Number(document.getElementById(id).value) || 0;
 }
@@ -162,6 +163,7 @@ function calcular() {
   btnCalcular.disabled = true;
   btnCalcular.classList.add("calculando");
   btnCalcular.innerHTML = '<span class="spinner"></span>Calculando...';
+
 
   // Simular pequeno delay para mostrar animação
   setTimeout(() => {
@@ -430,10 +432,10 @@ function detectarCategoria(texto) {
   return "outros";
 }
 
-function adicionarLancamentoRapido() {
+ function adicionarLancamentoRapido() {
   const input = document.getElementById("lancamentoRapido");
   const feedback = document.getElementById("feedbackLancamento");
-
+  
   if (!input) return;
 
   const texto = input.value.trim();
@@ -468,8 +470,25 @@ function adicionarLancamentoRapido() {
   const valorAtual = Number(campoCategoria.value) || 0;
   campoCategoria.value = valorAtual + valor;
 
+if (lancamentosRapidos.length > 8) {
+  lancamentosRapidos.pop();
+}
+
+lancamentosRapidos.unshift({
+  valor,
+  categoria,
+  texto,
+  data: new Date().toLocaleDateString("pt-BR")
+});
+
+mostrarLancamentosRapidos();
+mostrarLancamentosRapidos();
+salvarDados();
+calcular();
+atualizarPainelRapido();
   salvarDados();
   calcular();
+  atualizarPainelRapido();
 
   feedback.innerHTML = `
     <p class="sucesso-lancamento">
@@ -536,6 +555,214 @@ if (btnLancamentoRapido) {
     adicionarLancamentoRapido();
   });
 }
+
+function atualizarPainelRapido() {
+  const salario = pegarValor("salario");
+  const rendaExtra = pegarValor("rendaExtra");
+
+  const rendaTotal = salario + rendaExtra;
+
+  const moradia = pegarValor("moradia");
+  const contas = pegarValor("contas");
+  const alimentacao = pegarValor("alimentacao");
+  const transporte = pegarValor("transporte");
+  const lazer = pegarValor("lazer");
+  const outros = pegarValor("outros");
+
+  const totalGasto =
+    moradia + contas + alimentacao + transporte + lazer + outros;
+
+  const saldo = rendaTotal - totalGasto;
+
+  document.getElementById("gastoAtualRapido").textContent = formatar(totalGasto);
+  document.getElementById("saldoAtualRapido").textContent = formatar(saldo);
+  const hoje = new Date();
+
+const ultimoDia = new Date(
+  hoje.getFullYear(),
+  hoje.getMonth() + 1,
+  0
+).getDate();
+
+const diaAtual = hoje.getDate();
+
+const diasRestantes = ultimoDia - diaAtual + 1;
+
+const limiteHoje = saldo / diasRestantes;
+
+document.getElementById("limiteHoje").textContent =
+  formatar(limiteHoje);
+
+const alerta = document.getElementById("alertaFinanceiro");
+
+alerta.className = "alerta-financeiro";
+
+if (saldo <= 0) {
+  alerta.textContent = "🔴 Você zerou seu saldo disponível.";
+  alerta.classList.add("alerta-vermelho");
+} else if (limiteHoje < 20) {
+  alerta.textContent = "🟡 Atenção: limite diário muito baixo.";
+  alerta.classList.add("alerta-amarelo");
+} else {
+  alerta.textContent = "🟢 Tudo certo no momento.";
+}
+}
+
+
+
+
+
+
+const btnDesfazerLancamento = document.getElementById("btnDesfazerLancamento");
+
+if (btnDesfazerLancamento) {
+  btnDesfazerLancamento.addEventListener("click", () => {
+    if (!ultimoLancamentoRapido) {
+      alert("Nenhum lançamento para desfazer.");
+      return;
+    }
+
+    const campoCategoria = document.getElementById(ultimoLancamentoRapido.categoria);
+    const valorAtual = Number(campoCategoria.value) || 0;
+
+    campoCategoria.value = Math.max(0, valorAtual - ultimoLancamentoRapido.valor);
+
+    ultimoLancamentoRapido = null;
+
+    salvarDados();
+    calcular();
+    atualizarPainelRapido();
+  });
+}
+
+
+function atualizarRanking() {
+  const categorias = [
+    { nome: "🏠 Moradia", valor: pegarValor("moradia") },
+    { nome: "📄 Contas", valor: pegarValor("contas") },
+    { nome: "🍔 Alimentação", valor: pegarValor("alimentacao") },
+    { nome: "🚗 Transporte", valor: pegarValor("transporte") },
+    { nome: "🎉 Lazer", valor: pegarValor("lazer") },
+    { nome: "🛒 Outros", valor: pegarValor("outros") }
+  ];
+
+  categorias.sort((a, b) => b.valor - a.valor);
+
+  const box = document.getElementById("rankingGastos");
+
+  box.innerHTML = "";
+
+  categorias.forEach((item, index) => {
+    if (item.valor > 0) {
+      box.innerHTML += `
+        <div class="ranking-item">
+          <span>${index + 1}. ${item.nome}</span>
+          <strong>${formatar(item.valor)}</strong>
+        </div>
+      `;
+    }
+  });
+
+  if (box.innerHTML === "") {
+    box.innerHTML = "Nenhum gasto registrado ainda.";
+  }
+}
+function atualizarRanking() {
+  console.log("Ranking funcionando");
+}
+
+function mostrarLancamentosRapidos() {
+  const lista = document.getElementById("listaLancamentosRapidos");
+
+  if (!lista) return;
+
+  if (lancamentosRapidos.length === 0) {
+    lista.innerHTML = "Nenhum lançamento ainda.";
+    return;
+  }
+
+  lista.innerHTML = lancamentosRapidos.map((item, index) => `
+    <div class="lancamento-item">
+      <div class="lancamento-info">
+        <span class="lancamento-data">${item.data}</span>
+        <span>${item.texto}</span>
+        <span class="lancamento-valor">${formatar(item.valor)}</span>
+      </div>
+
+      <button class="btn-excluir" onclick="removerLancamento(${index})">
+        ❌
+      </button>
+    </div>
+  `).join("");
+}
+
+
+function removerLancamento(index) {
+  const lancamento = lancamentosRapidos[index];
+
+  if (!lancamento) return;
+
+  const campoCategoria = document.getElementById(lancamento.categoria);
+
+  if (campoCategoria) {
+    const valorAtual = Number(campoCategoria.value) || 0;
+    campoCategoria.value = Math.max(0, valorAtual - lancamento.valor);
+  }
+
+  lancamentosRapidos.splice(index, 1);
+
+  salvarDados();
+  calcular();
+  atualizarPainelRapido();
+  mostrarLancamentosRapidos();
+}
+
+function removerLancamento(index) {
+  lancamentosRapidos.splice(index, 1);
+  mostrarLancamentosRapidos();
+}
+
+function removerLancamento(index) {
+  const lancamento = lancamentosRapidos[index];
+
+  if (!lancamento) return;
+
+  const campoCategoria = document.getElementById(lancamento.categoria);
+
+  if (campoCategoria) {
+    const valorAtual = Number(campoCategoria.value) || 0;
+    campoCategoria.value = Math.max(0, valorAtual - lancamento.valor);
+  }
+
+  lancamentosRapidos.splice(index, 1);
+
+  salvarDados();
+  calcular();
+  atualizarPainelRapido();
+  mostrarLancamentosRapidos();
+}
+
+window.removerLancamento = function(index) {
+  const lancamento = lancamentosRapidos[index];
+
+  if (!lancamento) return;
+
+  const campoCategoria = document.getElementById(lancamento.categoria);
+
+  if (campoCategoria) {
+    const valorAtual = Number(campoCategoria.value) || 0;
+    campoCategoria.value = Math.max(0, valorAtual - lancamento.valor);
+  }
+
+  lancamentosRapidos.splice(index, 1);
+
+  salvarDados();
+  calcular();
+  atualizarPainelRapido();
+  mostrarLancamentosRapidos();
+};
+
+
 
 
 });
