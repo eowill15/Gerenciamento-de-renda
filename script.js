@@ -365,6 +365,155 @@ function limparCampos() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+
+  const btnLancamentoRapido = document.getElementById("btnLancamentoRapido");
+
+if (btnLancamentoRapido) {
+  btnLancamentoRapido.addEventListener("click", adicionarLancamentoRapido);
+}
+
+ let categoriaSelecionada = "";
+
+const palavrasCategorias = {
+  alimentacao: [
+    "almoço", "almoco", "janta", "lanche", "mercado", "padaria",
+    "ifood", "restaurante", "pizza", "hamburguer", "comida", "café", "cafe"
+  ],
+
+  transporte: [
+    "uber", "99", "onibus", "ônibus", "gasolina", "combustivel",
+    "combustível", "posto", "metro", "metrô", "taxi", "táxi"
+  ],
+
+  lazer: [
+    "netflix", "spotify", "cinema", "jogo", "playstation",
+    "steam", "bar", "festa", "show", "lazer", "youtube"
+  ],
+
+  contas: [
+    "internet", "luz", "agua", "água", "energia", "telefone",
+    "celular", "conta", "boleto"
+  ],
+
+  moradia: [
+    "aluguel", "condominio", "condomínio", "casa", "apartamento",
+    "moradia"
+  ],
+
+  outros: [
+    "outro", "outros", "compra", "pix", "presente", "roupa"
+  ]
+};
+
+function configurarPills() {
+  const pills = document.querySelectorAll(".pill");
+
+  pills.forEach((pill) => {
+    pill.addEventListener("click", () => {
+      pills.forEach((p) => p.classList.remove("ativa"));
+
+      pill.classList.add("ativa");
+      categoriaSelecionada = pill.dataset.categoria;
+    });
+  });
+}
+
+function detectarCategoria(texto) {
+  const textoNormalizado = texto.toLowerCase();
+
+  for (let categoria in palavrasCategorias) {
+    const palavras = palavrasCategorias[categoria];
+
+    const encontrou = palavras.some((palavra) => {
+      return textoNormalizado.includes(palavra);
+    });
+
+    if (encontrou) {
+      return categoria;
+    }
+  }
+
+  return "outros";
+}
+
+function adicionarLancamentoRapido() {
+  const input = document.getElementById("lancamentoRapido");
+  const feedback = document.getElementById("feedbackLancamento");
+
+  if (!input) return;
+
+  const texto = input.value.trim();
+
+  if (texto === "") {
+    feedback.innerHTML = `<p class="erro">Digite um gasto. Ex: 45 almoço</p>`;
+    return;
+  }
+
+  const valorEncontrado = texto.match(/\d+([,.]\d+)?/);
+
+  if (!valorEncontrado) {
+    feedback.innerHTML = `<p class="erro">Digite um valor válido. Ex: 32 uber</p>`;
+    return;
+  }
+
+  const valor = Number(valorEncontrado[0].replace(",", "."));
+
+  if (valor <= 0) {
+    feedback.innerHTML = `<p class="erro">O valor precisa ser maior que zero.</p>`;
+    return;
+  }
+
+  const categoria = categoriaSelecionada || detectarCategoria(texto);
+  const campoCategoria = document.getElementById(categoria);
+
+  if (!campoCategoria) {
+    feedback.innerHTML = `<p class="erro">Categoria não encontrada.</p>`;
+    return;
+  }
+
+  const valorAtual = Number(campoCategoria.value) || 0;
+  campoCategoria.value = valorAtual + valor;
+
+  salvarDados();
+  calcular();
+
+  feedback.innerHTML = `
+    <p class="sucesso-lancamento">
+      Adicionado ${formatar(valor)} em <strong>${nomeCategoria(categoria)}</strong>.
+    </p>
+  `;
+
+  input.value = "";
+  input.focus();
+}
+
+function nomeCategoria(categoria) {
+  const nomes = {
+    alimentacao: "Alimentação",
+    transporte: "Transporte",
+    lazer: "Lazer",
+    contas: "Contas fixas",
+    moradia: "Moradia",
+    outros: "Outros gastos"
+  };
+
+  return nomes[categoria] || "Outros gastos";
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  configurarPills();
+
+  const inputRapido = document.getElementById("lancamentoRapido");
+
+  if (inputRapido) {
+    inputRapido.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        adicionarLancamentoRapido();
+      }
+    });
+  }
+});
+
   const dadosCarregados = carregarDados();
   if (dadosCarregados) {
     calcular();

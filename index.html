@@ -1,18 +1,22 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Meu Dinheiro</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>">
+  <title>My Cash</title>
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#0f172a">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="Meu Dinheiro">
-  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>">
+  <link rel="apple-touch-icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💰</text></svg>">
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
   <div class="background-animation">
     <div class="bubble"></div>
@@ -30,6 +34,34 @@
 
     <section class="card paper form-card">
       <h2>Preencha seus dados</h2>
+
+      <section class="card paper">
+        <h2>Lançador rápido</h2>
+
+        <p class="placeholder">
+          Digite algo como: <strong>45 almoço</strong>, <strong>32 uber</strong>, <strong>39 netflix</strong>
+        </p>
+
+        <div class="lancador-box">
+          <input type="text" id="lancamentoRapido" placeholder="Ex: 45 almoço">
+
+          <div class="pills-categorias">
+            <button class="pill ativa" data-categoria="">Automático</button>
+            <button class="pill" data-categoria="alimentacao">Alimentação</button>
+            <button class="pill" data-categoria="transporte">Transporte</button>
+            <button class="pill" data-categoria="lazer">Lazer</button>
+            <button class="pill" data-categoria="contas">Contas</button>
+            <button class="pill" data-categoria="moradia">Moradia</button>
+            <button class="pill" data-categoria="outros">Outros</button>
+          </div>
+
+          <button class="btn principal" id="btnLancamentoRapido">
+            Adicionar gasto
+          </button>
+
+          <div id="feedbackLancamento" class="feedback-lancamento"></div>
+        </div>
+      </section>
 
       <div class="grid">
         <div class="campo">
@@ -137,4 +169,5 @@
     }
   </script>
 </body>
+
 </html>
