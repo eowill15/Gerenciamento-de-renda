@@ -534,4 +534,14 @@ document.addEventListener("DOMContentLoaded", () => {
   if (botaoLimparHistorico) {
     botaoLimparHistorico.addEventListener("click", limparHistorico);
   }
+
+  const btnLancamentoRapido = document.getElementById("btnLancamentoRapido");
+
+if (btnLancamentoRapido) {
+  btnLancamentoRapido.addEventListener("click", () => {
+    adicionarLancamentoRapido();
+  });
+}
+
+
 });
